@@ -42,9 +42,9 @@
   </div>
 </section>
 <section class="engine3d" id="real3dEngine">
-<div class="engine3d-head"><div><p>VELLESSA MILANO / REAL-TIME 3D</p><h2>Gerçek 3D Video Motoru</h2><span>GLB / glTF ayakkabı modelini sahneye yükle, ışığı ve kamerayı 3D ortamda hareket ettir, videoyu kaydet.</span></div><b>WEBGL ENGINE</b></div>
-<div class="engine3d-grid"><div class="engine3d-view"><canvas id="engine3dCanvas"></canvas><div id="engine3dEmpty">3D ayakkabı modelini (.glb) yükle</div></div><div class="engine3d-controls">
-<label>3D ürün modeli<input id="engine3dFile" type="file" accept=".glb,model/gltf-binary"></label>
+<div class="engine3d-head"><div><p>VELLESSA MILANO / REAL-TIME 3D</p><h2>Gerçek 3D Video Motoru</h2><span>Ayakkabının farklı açılardan fotoğraflarını ekle; fotoğraf setini 3D model üretimine hazırla.</span></div><b>WEBGL ENGINE</b></div>
+<div class="engine3d-grid"><div class="engine3d-view"><canvas id="engine3dCanvas"></canvas><div id="engine3dEmpty">Önce ayakkabının farklı açılardan fotoğraflarını ekle</div></div><div class="engine3d-controls">
+<label>Ayakkabı fotoğrafları (ön, arka, yan, üst ve detay)<input id="engine3dPhotos" type="file" accept="image/*" multiple></label><div id="engine3dPhotoList" class="engine3d-photo-list">Henüz fotoğraf eklenmedi. En az 8 farklı açı önerilir.</div><button type="button" id="engine3dPrepare" disabled>FOTOĞRAF SETİNİ HAZIRLA</button><p id="engine3dPhotoStatus" role="status">Fotoğraflar ürünün aynı modele ait ve net olmalı.</p><details class="engine3d-advanced"><summary>Hazır 3D modelim var</summary><label>GLB model<input id="engine3dFile" type="file" accept=".glb,model/gltf-binary"></label></details>
 <label>Video süresi<select id="engine3dDuration"><option value="10">10 saniye</option><option value="15">15 saniye</option><option value="20" selected>20 saniye</option></select></label>
 <label>Kamera hareketi<select id="engine3dMove"><option value="orbit">360° yörünge</option><option value="dolly">Yaklaşma ve uzaklaşma</option><option value="hero">Sinematik hero çekimi</option></select></label>
 <label>Arka plan<select id="engine3dBg"><option value="black">Parlak siyah stüdyo</option><option value="warm">Sıcak premium stüdyo</option></select></label>
