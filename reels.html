@@ -1,9 +1,45 @@
 <!doctype html>
 <html lang="tr">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vellessa Milano | Reels Atölyesi</title><link rel="stylesheet" href="styles.css?v=20261103-3"><link rel="stylesheet" href="reels.css?v=20261103-7"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vellessa Milano | Reels Atölyesi</title><link rel="stylesheet" href="styles.css?v=20261103-3"><link rel="stylesheet" href="reels.css?v=20261103-8"></head>
 <body>
 <aside class="sidebar"><h2>VELLESSA <small>MILANO</small></h2><p>YÖNETİM MERKEZİ</p><nav><a href="index.html">Satış Paneli</a><a href="reels.html">Reels Atölyesi</a><a href="analytics.html">Instagram Analizi</a><a href="musteri-takip.html">Müşteri Takibi</a><a href="automation.html">Otomasyon Merkezi</a></nav><small class="foot">MODÜL 02 · İÇERİK</small></aside>
 <main class="main"><header><div><p>VELLESSA MILANO / 02</p><h1>Reels Atölyesi</h1><span>Ürün videosu için kısa, uygulanabilir içerik planı.</span></div><b>İÇERİK TASLAĞI</b></header>
+
+<section class="studio-shell" id="motionStudio">
+  <div class="studio-heading"><div><p>VELLESSA MILANO / CREATIVE STUDIO</p><h2>360° Ürün & Model Stüdyosu</h2><span>Ürünü tüm açılardan sergile, model yürüyüş sahnesini hazırla.</span></div><span class="studio-live">● STÜDYO</span></div>
+  <div class="studio-tabs"><a class="active" href="#spin360">360° Ürün</a><a href="#modelWalk">Model & Yürüyüş</a><a href="#sceneTimeline">Sahne Akışı</a></div>
+  <div class="studio-grid">
+    <div class="studio-main">
+      <div class="preview-grid">
+        <section class="preview-card" id="spin360"><div class="preview-top"><b>360° ÜRÜN DÖNDÜRME</b><span id="spinCount">Görsel bekleniyor</span></div>
+          <div class="spin-stage" id="spinStage"><div class="spin-placeholder"><span>⟳</span><b>Ürünü 360° görüntüle</b><small>Farklı açılardan çekilmiş ürün fotoğraflarını yükle.</small></div><img id="spinImage" alt="360 derece ürün önizlemesi" hidden></div>
+          <label class="studio-upload">Çok açılı ürün fotoğrafları<input id="spinFiles" type="file" accept="image/*" multiple></label>
+          <div class="spin-controls"><button type="button" id="spinPrev" aria-label="Önceki açı">↶</button><input id="spinRange" type="range" min="0" max="0" value="0" disabled><button type="button" id="spinNext" aria-label="Sonraki açı">↷</button></div>
+          <small class="studio-note">En az 8 açı önerilir. Fotoğraflar sırayla gösterilir; ürünün gerçek detayları korunur.</small>
+        </section>
+        <section class="preview-card" id="modelWalk"><div class="preview-top"><b>MODEL GİYDİRME & YÜRÜYÜŞ</b><span>ÖNİZLEME</span></div>
+          <div class="walk-stage"><video id="walkPreview" controls playsinline hidden></video><div id="walkPlaceholder" class="spin-placeholder"><span>♙</span><b>Model yürüyüş videosu</b><small>Model üzerinde ürünün göründüğü gerçek çekimi yükle.</small></div></div>
+          <label class="studio-upload">Model videosu yükle<input id="walkFile" type="file" accept="video/*"></label>
+          <small class="studio-note">Otomatik gerçekçi giydirme için AI video servisi gerekir. Bu panel kaynak videoyu önizler; ayakkabıyı kendiliğinden modele eklediğini iddia etmez.</small>
+        </section>
+      </div>
+      <div class="feature-row">
+        <div class="feature-tile"><span>⟳</span><b>360° Ürün</b><small>Çoklu açı fotoğraflarından döndürme</small></div>
+        <div class="feature-tile"><span>♙</span><b>Modele Giydirme</b><small>Model sahnesi için kaynak video</small></div>
+        <div class="feature-tile"><span>➤</span><b>Yürüyüş Sahnesi</b><small>Gerçek yürüyüş videosu önizlemesi</small></div>
+      </div>
+      <section class="timeline-card" id="sceneTimeline"><b>ZAMAN ÇİZELGESİ / REELS AKIŞI</b><div class="timeline-steps"><div><span>01</span><b>360° ürün</b><small>0–5 sn</small></div><i>＋</i><div><span>02</span><b>Ürün detay</b><small>5–8 sn</small></div><i>＋</i><div><span>03</span><b>Model yürüyüş</b><small>8–12 sn</small></div><i>＋</i><div><span>04</span><b>Sipariş çağrısı</b><small>12–15 sn</small></div></div></section>
+    </div>
+    <aside class="studio-side"><h3>✦ Otomatik Reels Oluştur</h3><p>Ürün sahnelerini seç ve içerik akışını hazırla.</p>
+      <label>Ürün görseli / videosu<input id="studioSource" type="file" accept="image/*,video/*"></label><div id="studioSourceName" class="source-name">Henüz dosya seçilmedi</div>
+      <label>Çıktı süresi<select id="studioDuration"><option>12 saniye</option><option selected>15 saniye</option><option>20 saniye</option></select></label>
+      <label>Format<select id="studioFormat"><option>Reels / TikTok (9:16)</option><option>Story (9:16)</option><option>Gönderi (4:5)</option></select></label>
+      <div class="scene-toggles"><label><input type="checkbox" checked> 360° ürün döndürme</label><label><input type="checkbox" checked> Model giydirme sahnesi</label><label><input type="checkbox" checked> Yürüyüş (defile) sahnesi</label><label><input type="checkbox" checked> Detay yakın plan</label><label><input type="checkbox" checked> Metin & efekt</label></div>
+      <button type="button" id="buildStudioPlan" class="studio-primary">✦ Reels sahne planını oluştur</button><div id="studioPlanStatus" class="studio-note" role="status">Sahne planı henüz oluşturulmadı.</div>
+      <a class="studio-export" href="#mp4Studio">↓ MP4 oluşturma alanına git</a>
+    </aside>
+  </div>
+</section>
 <section class="panel"><p>VİDEO BRİFİ</p><h2>Bugünkü Reels içeriğini oluştur</h2>
 <div class="fields"><label>Ürün / model<input id="product" placeholder="Örn. Adidas Spezial"></label><label>Öne çıkarılacak özellik<input id="feature" placeholder="Örn. günlük kullanım, rahat kalıp"></label><label>Numara aralığı<input id="sizes" value="40–45"></label><label>İçerik türü<select id="kind"><option value="product">Ürün tanıtımı</option><option value="detail">Detay yakın plan</option><option value="style">Kombin / kullanım</option><option value="trust">Sipariş ve güven</option></select></label><label>Video süresi<select id="duration"><option value="12">12 saniye</option><option value="15">15 saniye</option><option value="20">20 saniye</option></select></label><label>Yayın hedefi<select id="goal"><option value="messages">DM ve sipariş mesajı</option><option value="reach">Erişim ve keşfet</option><option value="saves">Kaydetme ve paylaşım</option></select></label></div><button id="generate">Reels üretimini başlat</button><small class="muted">Tek işlemle çekim akışı, açıklama, hashtag ve kurgu kontrol listesi hazırlanır. Ürün görüntüsünün kendisi değiştirilmez.</small></section>
 <section class="panel" id="mp4Studio"><p>GERÇEK VİDEO İŞLEME</p><h2>MP4 oluştur ve indir</h2><p class="muted">Telefonundan ürün videosunu seç. Sistem videoyu dikey 1080 × 1920 MP4'e dönüştürür; görüntüyü esnetmez veya ayakkabı detaylarını değiştirmez.</p><label class="video-upload">Video dosyası (MP4, MOV, WEBM)<input id="videoFile" type="file" accept="video/*"></label><video id="videoPreview" controls playsinline hidden></video><div class="fields"><label>Çıktı süresi<select id="renderDuration"><option value="source">Videonun tamamı</option><option value="12">12 saniye</option><option value="15">15 saniye</option><option value="20">20 saniye</option></select></label><label>Ses<select id="renderAudio"><option value="keep">Orijinal sesi koru</option><option value="mute">Sessiz video</option></select></label></div><button id="renderMp4" disabled>MP4 oluştur</button><div id="renderStatus" class="muted" role="status">Önce bir video dosyası seç.</div><a id="downloadMp4" class="download-link" hidden download="vellessa-reels.mp4">MP4 videoyu indir</a><small class="muted">İşlem bu tarayıcıda yapılır. İlk kullanımda tek iş parçacıklı video işleme motoru indirilir (yaklaşık 32 MB). Büyük dosyalarda telefon belleği sınırlayıcı olabilir.</small></section>\n<section class="panel"><p>OTOMATİK KURGU PLANI</p><h2>Edit kontrol listesi</h2><div id="editPlan" class="edit-plan"><p>Ürün bilgilerini girip Reels üretimini başlat.</p></div></section><section class="panel"><p>ÜRETİM GEÇMİŞİ</p><h2>Kaydedilen Reels taslakları</h2><div id="draftHistory"><p class="muted">Henüz kaydedilmiş taslak yok.</p></div></section>
@@ -11,4 +47,4 @@
 <section class="panel"><p>PAYLAŞIM METNİ</p><h2>Açıklama</h2><textarea id="caption" rows="5" placeholder="Oluşturulan açıklama burada görünecek."></textarea><button class="secondary" data-copy="caption">Açıklamayı kopyala</button></section>
 <section class="panel"><p>ETİKETLER</p><h2>Hashtag seti</h2><textarea id="tags" rows="3">#vellessamilano #ayakkabı #erkekayakkabı #sneakerstyle #günlükstil</textarea><button class="secondary" data-copy="tags">Etiketleri kopyala</button></section>
 <section class="panel"><p>YAYIN TAKİBİ</p><h2>İçerik notu</h2><textarea id="memo" rows="3" placeholder="Yayın tarihi, izlenme, kaydetme ve gelen mesaj notları..."></textarea><button id="save">Notu kaydet</button><button id="saveDraft" class="secondary">Reels taslağını kaydet</button><small id="saved"></small></section>
-<footer>VELLESSA MILANO <span>Reels Atölyesi · Sürüm 0.1</span></footer></main><script src="reels.js?v=20261103-7"></script></body></html>
+<footer>VELLESSA MILANO <span>Reels Atölyesi · Sürüm 0.1</span></footer></main><script src="reels.js?v=20261103-8"></script></body></html>
