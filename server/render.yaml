@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: vellessa-3d-api
+    runtime: docker
+    dockerfilePath: ./server/Dockerfile
+    dockerContext: .
+    plan: standard
+    healthCheckPath: /health
+    disk:
+      name: vellessa-3d-data
+      mountPath: /data
+      sizeGB: 20
+    envVars:
+      - key: DATA_DIR
+        value: /data/jobs
+      - key: MAX_UPLOAD_MB
+        value: "250"
