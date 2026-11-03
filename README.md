@@ -1,15 +1,19 @@
 # Vellessa Milano - Yönetim Merkezi
 
-İlk modül: Satış paneli. Genel bakış, örnek ciro/sipariş göstergeleri, ürün grubu performansı ve tarayıcıda saklanan hızlı not alanı içerir.
+Vellessa Milano için mobil uyumlu işletme paneli.
+
+## Modüller
+- `index.html`: Satış paneli (demo veriler; Shopier canlı verisi değildir).
+- `reels.html`: Reels içerik akışı ve açıklama taslağı.
+- `analytics.html`: Windsor.ai üzerinden daha önce alınmış Instagram örnek raporu. Gösterilen tarih/saat canlı yenileme anlamına gelmez.
+- `musteri-takip.html`: Müşteri talebi, ürün, numara ve durum takibi. Kayıtlar kullanıcının tarayıcısında localStorage içinde saklanır; cihazlar arasında senkron değildir.
+- `automation.html`: Entegrasyon ve otomasyon durumları.
 
 ## Açma
-
 `index.html` dosyasını tarayıcıda açın. Mobil ekrana uyumludur.
 
-## Önemli
-
-Bu sürüm demo veriler kullanır. Shopier canlı sipariş/ciro bağlantısı henüz kurulmamıştır. Gerçek veri bağlantısı için Shopier'in sunduğu resmi API/entegrasyon erişimi ve güvenli bir sunucu gerekir. Gizli anahtarları bu depoya eklemeyin.
+## Entegrasyon durumu
+Shopier sipariş/ciro ve WhatsApp mesaj bağlantıları kurulmuş değildir. Instagram rapor sayfasındaki sayılar önceki bir veri çekiminin anlık olmayan görüntüsüdür. API anahtarlarını GitHub deposuna koymayın; gerçek entegrasyonlar güvenli sunucu tarafında yapılmalıdır.
 
 ## GitHub Pages
-
-Depoda Settings → Pages bölümünden Deploy from a branch seçin, `main` ve `/ (root)` seçerek kaydedin. Yayın adresi GitHub tarafından oluşturulur.
+Depoda Settings → Pages bölümünden Deploy from a branch seçip `main` ve `/ (root)` seçilebilir. Depo şu anda private olduğundan yayın koşulları GitHub planına ve ayarlarına bağlıdır.
