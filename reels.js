@@ -48,27 +48,50 @@ const data=await engine.readFile('vellessa-360.mp4');const blob=new Blob([data.b
 );
 })();
 
-/* Vellessa Signature cinematic ad: local canvas render, no paid API */
+/* Reference-matched 20s sneaker commercial. Original product pixels are only scaled/cropped; no generative product edits. */
 (()=>{const $=id=>document.getElementById(id);const pick=$('cinemaPhotos'),go=$('cinemaCreate');if(!pick||!go)return;let files=[],urls=[],resultUrl=null,busy=false;
 const status=t=>$('cinemaStatus').textContent=t;
-pick.addEventListener('change',()=>{urls.forEach(URL.revokeObjectURL);urls=[];files=Array.from(pick.files||[]).filter(f=>f.type.startsWith('image/')).slice(0,3);$('cinemaThumbs').replaceChildren();files.forEach(f=>{const u=URL.createObjectURL(f);urls.push(u);const im=document.createElement('img');im.src=u;im.alt='Ürün fotoğrafı';$('cinemaThumbs').append(im)});if(files.length<3){$('cinemaThumbs').insertAdjacentText('beforeend','3 fotoğraf seçmelisin.');}go.disabled=files.length!==3;status(files.length===3?'3 fotoğraf hazır. Sinematik videoyu oluşturabilirsin.':'Lütfen 3 ürün fotoğrafı seç.');});
-function rounded(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.stroke();}
-go.addEventListener('click',async()=>{if(busy||files.length!==3)return;busy=true;go.disabled=true;let stream,rec,chunks=[];try{
-status('Ürün fotoğrafları hazırlanıyor...');const imgs=await Promise.all(files.map(f=>createImageBitmap(f)));const canvas=$('cinemaCanvas'),ctx=canvas.getContext('2d');const fps=30,duration=10;stream=canvas.captureStream(fps);
-const types=['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm'];const mime=types.find(t=>MediaRecorder.isTypeSupported(t));if(!mime)throw new Error('Bu tarayıcı video kaydını desteklemiyor. Güncel Safari ile dene.');
-rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:8000000});rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};const done=new Promise((resolve,reject)=>{rec.onstop=resolve;rec.onerror=()=>reject(new Error('Video kaydı başarısız.'))});
-const start=performance.now();let last=0;function draw(now){const t=Math.min(duration,(now-start)/1000),scene=Math.min(2,Math.floor(t/(duration/3))),local=(t-scene*(duration/3))/(duration/3),img=imgs[scene];ctx.fillStyle='#070707';ctx.fillRect(0,0,720,1280);
-const pulse=.5-.5*Math.cos(local*Math.PI),scale=1.03+pulse*.13,iw=img.width,ih=img.height,fit=Math.min(610/iw,850/ih),w=iw*fit*scale,h=ih*fit*scale,drift=(local-.5)*30;
-ctx.save();ctx.shadowColor='rgba(222,181,105,.32)';ctx.shadowBlur=55;ctx.drawImage(img,(720-w)/2+drift,(590-h)/2,w,h);ctx.restore();
-const grad=ctx.createLinearGradient(0,0,720,0);grad.addColorStop(0,'rgba(7,7,7,0)');grad.addColorStop(.5,'rgba(220,177,104,.9)');grad.addColorStop(1,'rgba(7,7,7,0)');ctx.fillStyle=grad;ctx.fillRect(0,220+Math.sin(t*2)*8,720,2);
-ctx.fillStyle='#d9b777';ctx.font='600 17px Arial';ctx.textAlign='center';ctx.fillText('V E L L E S S A   M I L A N O',360,120);
-ctx.fillStyle='#f5f0e8';ctx.font='700 35px Arial';ctx.fillText(($('cinemaTitle').value||'VELLESSA MILANO').toUpperCase().slice(0,28),360,1030);
-ctx.fillStyle='#d6b779';ctx.font='500 18px Arial';ctx.fillText(($('cinemaSubtitle').value||'STYLE THAT MOVES').toUpperCase().slice(0,34),360,1074);
-ctx.fillStyle='rgba(214,183,121,'+(t>8.4?Math.min(1,(t-8.4)/.7):.88)+')';ctx.font='600 20px Arial';ctx.fillText(($('cinemaCta').value||'ŞİMDİ KEŞFET').toUpperCase().slice(0,34),360,1160);
-ctx.fillStyle='#999';ctx.font='14px Arial';ctx.fillText(($('cinemaUrl').value||'').slice(0,45),360,1192);
-ctx.fillStyle='#5c4a2c';ctx.fillRect(70,1230,580,2);ctx.fillStyle='#e2c58e';ctx.fillRect(70,1230,580*(t/duration),2);
-if(t<duration){if(now-last>30){last=now;status('Sinematik reklam kaydediliyor: '+Math.round(t/duration*100)+'%');}requestAnimationFrame(draw);}else{for(const b of stream.getTracks())b.stop();rec.stop();}
+pick.setAttribute('multiple','');pick.setAttribute('accept','image/*');
+pick.addEventListener('change',()=>{urls.forEach(URL.revokeObjectURL);urls=[];files=Array.from(pick.files||[]).filter(f=>f.type.startsWith('image/')).slice(0,3);$('cinemaThumbs').replaceChildren();files.forEach((f,i)=>{const u=URL.createObjectURL(f);urls.push(u);const im=document.createElement('img');im.src=u;im.alt='Ürün açısı '+(i+1);$('cinemaThumbs').append(im)});if(files.length<2)$('cinemaThumbs').insertAdjacentText('beforeend','En az 2 fotoğraf seçmelisin.');go.disabled=files.length<2;status(files.length>=2?files.length+' açı hazır. 20 saniyelik reklamı oluşturabilirsin.':'En az 2, en fazla 3 ürün fotoğrafı seç.');});
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function fitImage(ctx,img,x,y,w,h,scale=1,panX=0,panY=0){const f=Math.min(w/img.width,h/img.height)*scale,iw=img.width*f,ih=img.height*f;ctx.drawImage(img,x+(w-iw)/2+panX,y+(h-ih)/2+panY,iw,ih);}
+function glow(ctx,x,y,r,color){const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,color);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);}
+go.addEventListener('click',async()=>{if(busy||files.length<2)return;busy=true;go.disabled=true;let stream=null,rec=null,imgs=[];const chunks=[];try{
+status('Ürün fotoğrafları hazırlanıyor...');imgs=await Promise.all(files.map(f=>createImageBitmap(f)));
+const canvas=$('cinemaCanvas'),ctx=canvas.getContext('2d');canvas.width=720;canvas.height=1280;const fps=24,duration=20;stream=canvas.captureStream(fps);
+const mimeCandidates=['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm'];const mime=mimeCandidates.find(t=>MediaRecorder.isTypeSupported(t));if(!mime)throw new Error('Bu Safari sürümünde tarayıcı içi video kaydı desteklenmiyor.');
+rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:9000000});rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};const stopped=new Promise((resolve,reject)=>{rec.onstop=resolve;rec.onerror=()=>reject(new Error('Video kaydı başarısız.'))});
+const particles=Array.from({length:38},(_,i)=>({x:(i*137.5)%720,y:(i*271.3)%1280,r:1+(i%3)*.7,s:.3+(i%5)*.13,p:i*1.7}));
+const start=performance.now();let lastStatus=0;
+function draw(now){const t=clamp((now-start)/1000,0,duration),scene=t<3?0:t<7?1:t<11?2:t<15?3:4,local=scene===0?t/3:scene===1?(t-3)/4:scene===2?(t-7)/4:scene===3?(t-11)/4:(t-15)/5;
+ctx.fillStyle='#050607';ctx.fillRect(0,0,720,1280);
+glow(ctx,360,640,560,'rgba(181,94,31,.16)');glow(ctx,scene===3?360+Math.sin(t*1.8)*150:360,500,340,'rgba(225,151,73,.12)');
+const img=imgs[Math.min(imgs.length-1,scene===0?0:scene===1?Math.min(1,imgs.length-1):scene===2?Math.min(1,imgs.length-1):scene===3?0:Math.min(2,imgs.length-1))];
+if(scene===4&&imgs.length>=2){
+const a=imgs[0],b=imgs[imgs.length-1],pulse=1+.018*Math.sin(local*Math.PI);
+ctx.save();ctx.shadowColor='rgba(232,155,83,.35)';ctx.shadowBlur=52;fitImage(ctx,a,35,310,315,610,pulse);fitImage(ctx,b,370,310,315,610,pulse);ctx.restore();
+}else{
+let zoom=scene===0?1.02+local*.13:scene===1?1.12+local*.38:scene===2?1.24-local*.13:scene===3?1.12+Math.sin(local*Math.PI)*.10:1.04;
+let panX=scene===1?Math.sin(local*Math.PI*2)*24:scene===2?Math.cos(local*Math.PI)*18:scene===3?Math.sin(local*Math.PI*2)*30:0;
+let panY=scene===3?-Math.sin(local*Math.PI)*65:scene===1?Math.sin(local*Math.PI)*14:0;
+ctx.save();ctx.shadowColor='rgba(238,151,77,.48)';ctx.shadowBlur=scene===1?68:48;
+if(scene===3){ctx.translate(360,640);ctx.rotate(-.025+Math.sin(local*Math.PI)*.05);fitImage(ctx,img,-305,-360,610,720,zoom,panX,panY);ctx.restore();ctx.save();ctx.strokeStyle='rgba(232,171,102,.34)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(360,1000,235,32,0,0,Math.PI*2);ctx.stroke();}
+else{fitImage(ctx,img,28,235,664,770,zoom,panX,panY);ctx.restore();}
 }
-rec.start(250);requestAnimationFrame(draw);await done;const blob=new Blob(chunks,{type:mime});if(resultUrl)URL.revokeObjectURL(resultUrl);resultUrl=URL.createObjectURL(blob);const video=$('cinemaResult');video.src=resultUrl;video.hidden=false;const link=$('cinemaDownload');link.href=resultUrl;link.download=mime.includes('mp4')?'vellessa-signature-reel.mp4':'vellessa-signature-reel.webm';link.hidden=false;link.textContent=mime.includes('mp4')?'MP4 videoyu indir':'WEBM videoyu indir';status((mime.includes('mp4')?'MP4':'WEBM')+' hazır. '+(blob.size/1048576).toFixed(1)+' MB.');imgs.forEach(x=>x.close());
-}catch(e){console.error(e);if(stream)stream.getTracks().forEach(x=>x.stop());status('Video oluşturulamadı: '+e.message);}finally{busy=false;go.disabled=files.length!==3;}});
+ctx.save();ctx.globalCompositeOperation='screen';
+for(const p of particles){const y=(p.y-t*(18+p.s*24)+1280)%1280,x=p.x+Math.sin(t*.8+p.p)*18;ctx.fillStyle='rgba(255,181,103,'+(.18+.35*(.5+.5*Math.sin(t*2+p.p)))+')';ctx.beginPath();ctx.arc(x,y,p.r,0,Math.PI*2);ctx.fill();}
+ctx.restore();
+const beam=ctx.createLinearGradient(0,0,720,0);beam.addColorStop(0,'rgba(0,0,0,0)');beam.addColorStop(.5,'rgba(246,174,102,.85)');beam.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=beam;ctx.fillRect(0,scene===1?360+local*450:scene===3?260+local*650:190+Math.sin(t*1.4)*100,2,720);
+const title=$('cinemaTitle').value||'VELLESSA MILANO',sub=$('cinemaSubtitle').value||'PREMIUM SNEAKER COLLECTION';
+ctx.textAlign='center';ctx.fillStyle='#e7b47a';ctx.font='600 16px Arial';ctx.fillText('V E L L E S S A   M I L A N O',360,112);
+if(scene===0){ctx.fillStyle='#f5eee4';ctx.font='700 32px Arial';ctx.fillText(title.toUpperCase().slice(0,30),360,1030);ctx.fillStyle='#d7a36b';ctx.font='16px Arial';ctx.fillText(sub.toUpperCase().slice(0,36),360,1070);}
+else if(scene===1){ctx.fillStyle='#f3e6d5';ctx.font='600 18px Arial';ctx.fillText('DETAIL IN EVERY STEP',360,1090);}
+else if(scene===2){ctx.fillStyle='#f3e6d5';ctx.font='600 18px Arial';ctx.fillText('DESIGNED TO STAND OUT',360,1090);}
+else if(scene===3){ctx.fillStyle='#f3e6d5';ctx.font='600 18px Arial';ctx.fillText('MAKE YOUR MOVE',360,1090);}
+else{ctx.fillStyle='#f5eee4';ctx.font='700 29px Arial';ctx.fillText(title.toUpperCase().slice(0,30),360,1030);ctx.fillStyle='#e5bd84';ctx.font='600 18px Arial';ctx.fillText(($('cinemaCta').value||'ŞİMDİ KEŞFET').toUpperCase().slice(0,34),360,1080);ctx.fillStyle='#aaa';ctx.font='14px Arial';ctx.fillText(($('cinemaUrl').value||'').slice(0,42),360,1120);}
+ctx.fillStyle='#61462c';ctx.fillRect(64,1205,592,2);ctx.fillStyle='#e7b47a';ctx.fillRect(64,1205,592*(t/duration),2);
+if(t<duration){if(now-lastStatus>400){lastStatus=now;status('Sinematik reklam hazırlanıyor: '+Math.round(t/duration*100)+'% · '+(scene===0?'Giriş ve ışık':scene===1?'Makro detay':scene===2?'Açı geçişi':scene===3?'Havada süzülme':'Final ürün pozu'));}requestAnimationFrame(draw);}else{stream.getTracks().forEach(x=>x.stop());rec.stop();}}
+rec.start(250);requestAnimationFrame(draw);await stopped;
+const blob=new Blob(chunks,{type:mime});if(resultUrl)URL.revokeObjectURL(resultUrl);resultUrl=URL.createObjectURL(blob);const video=$('cinemaResult');video.src=resultUrl;video.hidden=false;const link=$('cinemaDownload');link.href=resultUrl;link.download=mime.includes('mp4')?'vellessa-cinematic-sneaker-ad.mp4':'vellessa-cinematic-sneaker-ad.webm';link.hidden=false;link.textContent=mime.includes('mp4')?'MP4 videoyu indir':'WEBM videoyu indir';status((mime.includes('mp4')?'MP4':'WEBM')+' hazır · 20 saniye · '+(blob.size/1048576).toFixed(1)+' MB.');}
+catch(e){console.error(e);if(stream)stream.getTracks().forEach(x=>x.stop());status('Video oluşturulamadı: '+(e&&e.message?e.message:'Bilinmeyen hata'));}finally{imgs.forEach(x=>x.close());busy=false;go.disabled=files.length<2;}});
 })();
