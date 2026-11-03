@@ -48,50 +48,42 @@ const data=await engine.readFile('vellessa-360.mp4');const blob=new Blob([data.b
 );
 })();
 
-/* Reference-matched 20s sneaker commercial. Original product pixels are only scaled/cropped; no generative product edits. */
+/* Continuous cinematic product-film renderer: one flowing 3D-style camera move, no slide cuts. */
 (()=>{const $=id=>document.getElementById(id);const pick=$('cinemaPhotos'),go=$('cinemaCreate');if(!pick||!go)return;let files=[],urls=[],resultUrl=null,busy=false;
-const status=t=>$('cinemaStatus').textContent=t;
-pick.setAttribute('multiple','');pick.setAttribute('accept','image/*');
-pick.addEventListener('change',()=>{urls.forEach(URL.revokeObjectURL);urls=[];files=Array.from(pick.files||[]).filter(f=>f.type.startsWith('image/')).slice(0,3);$('cinemaThumbs').replaceChildren();files.forEach((f,i)=>{const u=URL.createObjectURL(f);urls.push(u);const im=document.createElement('img');im.src=u;im.alt='Ürün açısı '+(i+1);$('cinemaThumbs').append(im)});if(files.length<2)$('cinemaThumbs').insertAdjacentText('beforeend','En az 2 fotoğraf seçmelisin.');go.disabled=files.length<2;status(files.length>=2?files.length+' açı hazır. 20 saniyelik reklamı oluşturabilirsin.':'En az 2, en fazla 3 ürün fotoğrafı seç.');});
+const status=t=>$('cinemaStatus').textContent=t;pick.setAttribute('multiple','');pick.setAttribute('accept','image/*');
+pick.addEventListener('change',()=>{urls.forEach(URL.revokeObjectURL);urls=[];files=Array.from(pick.files||[]).filter(f=>f.type.startsWith('image/')).slice(0,3);$('cinemaThumbs').replaceChildren();files.forEach((f,i)=>{const u=URL.createObjectURL(f);urls.push(u);const im=document.createElement('img');im.src=u;im.alt='Ürün açısı '+(i+1);$('cinemaThumbs').append(im)});if(files.length<1)$('cinemaThumbs').insertAdjacentText('beforeend','En az 1 ürün fotoğrafı seç.');go.disabled=!files.length;status(files.length?files.length+' ürün açısı hazır. Kesintisiz sinematik animasyon oluşturabilirsin.':'En az 1 ürün fotoğrafı seç.');});
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-function fitImage(ctx,img,x,y,w,h,scale=1,panX=0,panY=0){const f=Math.min(w/img.width,h/img.height)*scale,iw=img.width*f,ih=img.height*f;ctx.drawImage(img,x+(w-iw)/2+panX,y+(h-ih)/2+panY,iw,ih);}
-function glow(ctx,x,y,r,color){const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,color);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);}
-go.addEventListener('click',async()=>{if(busy||files.length<2)return;busy=true;go.disabled=true;let stream=null,rec=null,imgs=[];const chunks=[];try{
-status('Ürün fotoğrafları hazırlanıyor...');imgs=await Promise.all(files.map(f=>createImageBitmap(f)));
-const canvas=$('cinemaCanvas'),ctx=canvas.getContext('2d');canvas.width=720;canvas.height=1280;const fps=24,duration=20;stream=canvas.captureStream(fps);
-const mimeCandidates=['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm'];const mime=mimeCandidates.find(t=>MediaRecorder.isTypeSupported(t));if(!mime)throw new Error('Bu Safari sürümünde tarayıcı içi video kaydı desteklenmiyor.');
-rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:9000000});rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};const stopped=new Promise((resolve,reject)=>{rec.onstop=resolve;rec.onerror=()=>reject(new Error('Video kaydı başarısız.'))});
-const particles=Array.from({length:38},(_,i)=>({x:(i*137.5)%720,y:(i*271.3)%1280,r:1+(i%3)*.7,s:.3+(i%5)*.13,p:i*1.7}));
-const start=performance.now();let lastStatus=0;
-function draw(now){const t=clamp((now-start)/1000,0,duration),scene=t<3?0:t<7?1:t<11?2:t<15?3:4,local=scene===0?t/3:scene===1?(t-3)/4:scene===2?(t-7)/4:scene===3?(t-11)/4:(t-15)/5;
-ctx.fillStyle='#050607';ctx.fillRect(0,0,720,1280);
-glow(ctx,360,640,560,'rgba(181,94,31,.16)');glow(ctx,scene===3?360+Math.sin(t*1.8)*150:360,500,340,'rgba(225,151,73,.12)');
-const img=imgs[Math.min(imgs.length-1,scene===0?0:scene===1?Math.min(1,imgs.length-1):scene===2?Math.min(1,imgs.length-1):scene===3?0:Math.min(2,imgs.length-1))];
-if(scene===4&&imgs.length>=2){
-const a=imgs[0],b=imgs[imgs.length-1],pulse=1+.018*Math.sin(local*Math.PI);
-ctx.save();ctx.shadowColor='rgba(232,155,83,.35)';ctx.shadowBlur=52;fitImage(ctx,a,35,310,315,610,pulse);fitImage(ctx,b,370,310,315,610,pulse);ctx.restore();
-}else{
-let zoom=scene===0?1.02+local*.13:scene===1?1.12+local*.38:scene===2?1.24-local*.13:scene===3?1.12+Math.sin(local*Math.PI)*.10:1.04;
-let panX=scene===1?Math.sin(local*Math.PI*2)*24:scene===2?Math.cos(local*Math.PI)*18:scene===3?Math.sin(local*Math.PI*2)*30:0;
-let panY=scene===3?-Math.sin(local*Math.PI)*65:scene===1?Math.sin(local*Math.PI)*14:0;
-ctx.save();ctx.shadowColor='rgba(238,151,77,.48)';ctx.shadowBlur=scene===1?68:48;
-if(scene===3){ctx.translate(360,640);ctx.rotate(-.025+Math.sin(local*Math.PI)*.05);fitImage(ctx,img,-305,-360,610,720,zoom,panX,panY);ctx.restore();ctx.save();ctx.strokeStyle='rgba(232,171,102,.34)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(360,1000,235,32,0,0,Math.PI*2);ctx.stroke();}
-else{fitImage(ctx,img,28,235,664,770,zoom,panX,panY);ctx.restore();}
-}
-ctx.save();ctx.globalCompositeOperation='screen';
-for(const p of particles){const y=(p.y-t*(18+p.s*24)+1280)%1280,x=p.x+Math.sin(t*.8+p.p)*18;ctx.fillStyle='rgba(255,181,103,'+(.18+.35*(.5+.5*Math.sin(t*2+p.p)))+')';ctx.beginPath();ctx.arc(x,y,p.r,0,Math.PI*2);ctx.fill();}
-ctx.restore();
-const beam=ctx.createLinearGradient(0,0,720,0);beam.addColorStop(0,'rgba(0,0,0,0)');beam.addColorStop(.5,'rgba(246,174,102,.85)');beam.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=beam;ctx.fillRect(0,scene===1?360+local*450:scene===3?260+local*650:190+Math.sin(t*1.4)*100,2,720);
-const title=$('cinemaTitle').value||'VELLESSA MILANO',sub=$('cinemaSubtitle').value||'PREMIUM SNEAKER COLLECTION';
-ctx.textAlign='center';ctx.fillStyle='#e7b47a';ctx.font='600 16px Arial';ctx.fillText('V E L L E S S A   M I L A N O',360,112);
-if(scene===0){ctx.fillStyle='#f5eee4';ctx.font='700 32px Arial';ctx.fillText(title.toUpperCase().slice(0,30),360,1030);ctx.fillStyle='#d7a36b';ctx.font='16px Arial';ctx.fillText(sub.toUpperCase().slice(0,36),360,1070);}
-else if(scene===1){ctx.fillStyle='#f3e6d5';ctx.font='600 18px Arial';ctx.fillText('DETAIL IN EVERY STEP',360,1090);}
-else if(scene===2){ctx.fillStyle='#f3e6d5';ctx.font='600 18px Arial';ctx.fillText('DESIGNED TO STAND OUT',360,1090);}
-else if(scene===3){ctx.fillStyle='#f3e6d5';ctx.font='600 18px Arial';ctx.fillText('MAKE YOUR MOVE',360,1090);}
-else{ctx.fillStyle='#f5eee4';ctx.font='700 29px Arial';ctx.fillText(title.toUpperCase().slice(0,30),360,1030);ctx.fillStyle='#e5bd84';ctx.font='600 18px Arial';ctx.fillText(($('cinemaCta').value||'ŞİMDİ KEŞFET').toUpperCase().slice(0,34),360,1080);ctx.fillStyle='#aaa';ctx.font='14px Arial';ctx.fillText(($('cinemaUrl').value||'').slice(0,42),360,1120);}
-ctx.fillStyle='#61462c';ctx.fillRect(64,1205,592,2);ctx.fillStyle='#e7b47a';ctx.fillRect(64,1205,592*(t/duration),2);
-if(t<duration){if(now-lastStatus>400){lastStatus=now;status('Sinematik reklam hazırlanıyor: '+Math.round(t/duration*100)+'% · '+(scene===0?'Giriş ve ışık':scene===1?'Makro detay':scene===2?'Açı geçişi':scene===3?'Havada süzülme':'Final ürün pozu'));}requestAnimationFrame(draw);}else{stream.getTracks().forEach(x=>x.stop());rec.stop();}}
-rec.start(250);requestAnimationFrame(draw);await stopped;
-const blob=new Blob(chunks,{type:mime});if(resultUrl)URL.revokeObjectURL(resultUrl);resultUrl=URL.createObjectURL(blob);const video=$('cinemaResult');video.src=resultUrl;video.hidden=false;const link=$('cinemaDownload');link.href=resultUrl;link.download=mime.includes('mp4')?'vellessa-cinematic-sneaker-ad.mp4':'vellessa-cinematic-sneaker-ad.webm';link.hidden=false;link.textContent=mime.includes('mp4')?'MP4 videoyu indir':'WEBM videoyu indir';status((mime.includes('mp4')?'MP4':'WEBM')+' hazır · 20 saniye · '+(blob.size/1048576).toFixed(1)+' MB.');}
-catch(e){console.error(e);if(stream)stream.getTracks().forEach(x=>x.stop());status('Video oluşturulamadı: '+(e&&e.message?e.message:'Bilinmeyen hata'));}finally{imgs.forEach(x=>x.close());busy=false;go.disabled=files.length<2;}});
+function radial(ctx,x,y,r,c){const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);}
+function fit(ctx,img,cx,cy,maxW,maxH,scale,tilt){const f=Math.min(maxW/img.width,maxH/img.height)*scale,w=img.width*f,h=img.height*f;ctx.save();ctx.translate(cx,cy);ctx.transform(1,tilt,tilt*.12,1,0,0);ctx.drawImage(img,-w/2,-h/2,w,h);ctx.restore();return {w,h};}
+go.addEventListener('click',async()=>{if(busy||!files.length)return;busy=true;go.disabled=true;let stream=null,rec=null,imgs=[];const chunks=[];try{
+status('Ürün görselleri hazırlanıyor...');imgs=await Promise.all(files.map(f=>createImageBitmap(f)));
+const canvas=$('cinemaCanvas'),ctx=canvas.getContext('2d');canvas.width=720;canvas.height=1280;const duration=20,fps=30;stream=canvas.captureStream(fps);
+const mime=['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm'].find(t=>MediaRecorder.isTypeSupported(t));if(!mime)throw new Error('Bu tarayıcı video kaydını desteklemiyor.');
+rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:10000000});rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};const stopped=new Promise((resolve,reject)=>{rec.onstop=resolve;rec.onerror=()=>reject(new Error('Video kaydı başarısız.'))});
+const drops=Array.from({length:34},(_,i)=>({x:(i*193.7)%720,y:(i*317.1)%1280,r:2+(i%4)*1.35,s:.45+(i%7)*.13,phase:i*2.31}));
+const start=performance.now();let last=0;
+function draw(now){const t=clamp((now-start)/1000,0,duration),p=t/duration;ctx.fillStyle='#08090b';ctx.fillRect(0,0,720,1280);
+const bg=ctx.createRadialGradient(360,570,30,360,620,730);bg.addColorStop(0,'#39271d');bg.addColorStop(.42,'#171719');bg.addColorStop(1,'#050607');ctx.fillStyle=bg;ctx.fillRect(0,0,720,1280);
+radial(ctx,100+Math.sin(t*.42)*90,450,270,'rgba(219,111,48,.2)');radial(ctx,650+Math.cos(t*.31)*80,590,300,'rgba(238,168,103,.13)');
+/* Moving studio spotlights */
+for(let k=0;k<3;k++){const x=360+Math.sin(t*.36+k*2.1)*420;const g=ctx.createLinearGradient(x-130,0,x+130,1050);g.addColorStop(0,'rgba(241,171,104,0)');g.addColorStop(.45,'rgba(241,171,104,.075)');g.addColorStop(1,'rgba(241,171,104,0)');ctx.fillStyle=g;ctx.fillRect(x-130,0,260,1050);}
+/* Glossy black floor and soft horizon */
+const horizon=900;const floor=ctx.createLinearGradient(0,horizon,0,1280);floor.addColorStop(0,'rgba(70,61,55,.18)');floor.addColorStop(.35,'rgba(26,25,25,.7)');floor.addColorStop(1,'#030405');ctx.fillStyle=floor;ctx.fillRect(0,horizon,720,380);ctx.strokeStyle='rgba(221,166,113,.13)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,horizon);ctx.lineTo(720,horizon);ctx.stroke();
+/* Product stays in one continuous shot: slow orbit, dolly and focus breathing. */
+const img=imgs[0],zoom=1.02+.10*(.5-.5*Math.cos(t*.46)),orbit=Math.sin(t*.34)*.085,driftX=Math.sin(t*.48)*24,driftY=Math.cos(t*.39)*16,cx=360+driftX,cy=635+driftY;
+ctx.save();ctx.globalAlpha=.25;ctx.translate(cx,2*horizon-cy+28);ctx.scale(1,-.34);ctx.filter='blur(13px)';fit(ctx,img,0,0,630,650,zoom,orbit);ctx.restore();
+ctx.save();ctx.shadowColor='rgba(238,145,76,.4)';ctx.shadowBlur=45;fit(ctx,img,cx,cy,640,720,zoom,orbit);ctx.restore();
+/* Simulated lens rack focus and anamorphic flare, not hard scene changes */
+const focus=.5+.5*Math.sin(t*.7);ctx.fillStyle='rgba(4,5,7,'+(.08+.07*focus)+')';ctx.fillRect(0,0,720,1280);
+const flareX=360+Math.sin(t*.62)*260;const flare=ctx.createLinearGradient(flareX-240,0,flareX+240,0);flare.addColorStop(0,'rgba(239,164,96,0)');flare.addColorStop(.5,'rgba(255,193,129,.28)');flare.addColorStop(1,'rgba(239,164,96,0)');ctx.fillStyle=flare;ctx.fillRect(0,cy-160,720,3);
+/* Floating glass/water droplets with specular highlights */
+ctx.save();ctx.globalCompositeOperation='screen';for(const d of drops){const x=(d.x+Math.sin(t*.55+d.phase)*28+720)%720,y=(d.y-t*(13+d.s*22)+1280*4)%(1280),r=d.r*(.8+.2*Math.sin(t+d.phase));const g=ctx.createRadialGradient(x-r*.35,y-r*.4,1,x,y,r*1.7);g.addColorStop(0,'rgba(255,255,255,.88)');g.addColorStop(.18,'rgba(255,226,194,.34)');g.addColorStop(.58,'rgba(210,137,83,.16)');g.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r*1.7,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(255,238,217,.45)';ctx.lineWidth=.8;ctx.beginPath();ctx.arc(x,y,r,Math.PI*1.08,Math.PI*1.82);ctx.stroke();}ctx.restore();
+/* Minimal premium typography; remains outside the product silhouette */
+ctx.textAlign='center';ctx.fillStyle='rgba(226,184,137,.9)';ctx.font='600 15px Arial';ctx.fillText('V E L L E S S A   M I L A N O',360,112);
+ctx.fillStyle='rgba(245,239,229,.9)';ctx.font='600 18px Arial';ctx.fillText(($('cinemaSubtitle').value||'PREMIUM SNEAKER COLLECTION').toUpperCase().slice(0,34),360,1090);
+if(t>15){ctx.fillStyle='rgba(230,188,139,'+clamp((t-15)/2,.15,.95)+')';ctx.font='700 23px Arial';ctx.fillText(($('cinemaCta').value||'ŞİMDİ KEŞFET').toUpperCase().slice(0,34),360,1150);ctx.fillStyle='#aaa';ctx.font='13px Arial';ctx.fillText(($('cinemaUrl').value||'').slice(0,42),360,1182);}
+ctx.fillStyle='rgba(224,172,115,.18)';ctx.fillRect(70,1230,580,1);ctx.fillStyle='rgba(224,172,115,.8)';ctx.fillRect(70,1230,580*p,1);
+if(t<duration){if(now-last>500){last=now;status('Kesintisiz kamera animasyonu hazırlanıyor: '+Math.round(p*100)+'%');}requestAnimationFrame(draw);}else{stream.getTracks().forEach(x=>x.stop());rec.stop();}}
+rec.start(250);requestAnimationFrame(draw);await stopped;const blob=new Blob(chunks,{type:mime});if(resultUrl)URL.revokeObjectURL(resultUrl);resultUrl=URL.createObjectURL(blob);const video=$('cinemaResult');video.src=resultUrl;video.hidden=false;const link=$('cinemaDownload');link.href=resultUrl;link.download=mime.includes('mp4')?'vellessa-cinematic-film.mp4':'vellessa-cinematic-film.webm';link.hidden=false;link.textContent=mime.includes('mp4')?'MP4 videoyu indir':'WEBM videoyu indir';status((mime.includes('mp4')?'MP4':'WEBM')+' hazır · 20 saniye · '+(blob.size/1048576).toFixed(1)+' MB.');
+}catch(e){console.error(e);if(stream)stream.getTracks().forEach(x=>x.stop());status('Video oluşturulamadı: '+(e&&e.message?e.message:'Bilinmeyen hata'));}finally{imgs.forEach(x=>x.close());busy=false;go.disabled=!files.length;}});
 })();
