@@ -16,3 +16,6 @@
 #cinemaCanvas{display:none}
 #cinemaResult{aspect-ratio:9/16;object-fit:contain}
 @media(max-width:650px){.cinema-head h2{font-size:21px}.cinema-thumbs{min-height:115px}.cinema-thumbs img{height:105px}}
+
+/* Continuous product film UI */
+.cinema-studio{background:radial-gradient(ellipse at 50% 10%,#3b2518 0,#151416 40%,#050607 100%)}#cinemaResult{aspect-ratio:9/16;object-fit:contain}.cinema-thumbs img{object-fit:contain;background:transparent}
