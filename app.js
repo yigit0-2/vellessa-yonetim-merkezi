@@ -1,0 +1,1 @@
+const n=document.querySelector('#note');n.value=localStorage.getItem('vellessa_note')||'';document.querySelector('#save').onclick=()=>{localStorage.setItem('vellessa_note',n.value);document.querySelector('#saved').textContent=' Kaydedildi.'};
