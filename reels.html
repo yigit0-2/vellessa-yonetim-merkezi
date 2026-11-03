@@ -1,21 +1,10 @@
 <!doctype html>
 <html lang="tr">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vellessa Milano | Reels Atölyesi</title><link rel="stylesheet" href="styles.css?v=20261103-3"><link rel="stylesheet" href="reels.css?v=20261104-iphone1"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vellessa Milano | Reels Atölyesi</title><link rel="stylesheet" href="styles.css?v=20261103-3"><link rel="stylesheet" href="reels.css?v=20261104-clean1"></head>
 <body>
 <aside class="sidebar"><h2>VELLESSA <small>MILANO</small></h2><p>YÖNETİM MERKEZİ</p><nav><a href="index.html">Satış Paneli</a><a href="reels.html">Reels Atölyesi</a><a href="analytics.html">Instagram Analizi</a><a href="musteri-takip.html">Müşteri Takibi</a><a href="automation.html">Otomasyon Merkezi</a></nav><small class="foot">MODÜL 02 · İÇERİK</small></aside>
 <main class="main"><header><div><p>VELLESSA MILANO / 02</p><h1>Reels Atölyesi</h1><span>Ürün videosu için kısa, uygulanabilir içerik planı.</span></div><b>İÇERİK TASLAĞI</b></header>
 
-<section class="engine3d" id="real3dEngine">
-<div class="engine3d-head"><div><p>VELLESSA MILANO / IPHONE 3D</p><h2>iPhone ile Gerçek 3D Ürün</h2><span>Ayakkabıyı telefonla tara, 3D modeli bu ekrana yükle ve videonu iPhone’dan oluştur.</span></div><b>IPHONE UYUMLU</b></div>
-<div class="engine3d-grid"><div class="engine3d-view"><canvas id="engine3dCanvas"></canvas><div id="engine3dEmpty">Önce iPhone ile taradığın GLB modelini yükle</div></div><div class="engine3d-controls">
-<div class="iphone-scan-guide"><b>1. Ücretsiz tarama uygulamasını aç</b><p>Epic Games RealityScan Mobile ile ayakkabının çevresinde dolaşarak farklı açılardan tarama yap.</p><a href="https://apps.apple.com/app/realityscan-mobile/id1584832280" target="_blank" rel="noopener">RealityScan’i App Store’dan aç</a><b>2. Modeli dışa aktar</b><p>iPhone’da model OBJ olarak kaydedilir. GLB almak için RealityScan’den Sketchfab’e gönderip modeli GLB formatında indir.</p><b>3. Buraya yükle ve videonu oluştur</b><p>Dosyalar uygulamasından GLB modelini seç. Sonra aşağıdaki video ayarlarını kullan.</p></div>
-<label>3D model dosyası (GLB)<input id="engine3dFile" type="file" accept=".glb,model/gltf-binary"></label>
-<label>Video süresi<select id="engine3dDuration"><option value="10">10 saniye</option><option value="15">15 saniye</option><option value="20" selected>20 saniye</option></select></label>
-<label>Kamera hareketi<select id="engine3dMove"><option value="orbit">360° yörünge</option><option value="dolly">Yaklaşma ve uzaklaşma</option><option value="hero">Sinematik hero çekimi</option></select></label>
-<label>Arka plan<select id="engine3dBg"><option value="black">Parlak siyah stüdyo</option><option value="warm">Sıcak premium stüdyo</option></select></label>
-<button id="engine3dRender" disabled>3D VİDEOYU OLUŞTUR</button><p id="engine3dStatus" role="status">Motor hazır. Önce .glb model yükle.</p><video id="engine3dResult" controls playsinline hidden></video><a id="engine3dDownload" hidden download="vellessa-3d-film.mp4">Videoyu indir</a>
-</div></div><small class="engine3d-note">Bu bölüm gerçek 3D geometriyi işler; fotoğraftan ayakkabı modeli üretmez. Ayakkabının şeklini ve detaylarını korumak için kendi ürününün GLB modelini kullan. Model dosyası olmadan gerçek 3D sonuç üretilemez. Dışa aktarma tarayıcı ve cihazın MediaRecorder desteğine bağlıdır.</small>
-</section>
 <section class="cinema-studio" id="cinemaStudio">
 <div class="cinema-head"><div><p>VELLESSA MILANO / SIGNATURE FILM</p><h2>Kesintisiz 3D Stilinde Sneaker Filmi</h2><span>20 saniyelik tek plan reklam animasyonu: sürekli kamera hareketi, parlak siyah stüdyo, yansıma, hareketli ışık ve su damlacıkları.</span></div><b>ÜCRETSİZ · TARAYICIDA</b></div>
 <div class="cinema-grid"><div><label class="cinema-upload">Ürün fotoğrafı (şeffaf PNG önerilir)<input id="cinemaPhotos" type="file" accept="image/*" multiple></label><div id="cinemaThumbs" class="cinema-thumbs"><span>Ön, yan ve detay açılarını yükle. En az 2, en fazla 3 fotoğraf.</span></div></div>
@@ -29,4 +18,4 @@
 <section class="panel"><p>PAYLAŞIM METNİ</p><h2>Açıklama</h2><textarea id="caption" rows="5" placeholder="Oluşturulan açıklama burada görünecek."></textarea><button class="secondary" data-copy="caption">Açıklamayı kopyala</button></section>
 <section class="panel"><p>ETİKETLER</p><h2>Hashtag seti</h2><textarea id="tags" rows="3">#vellessamilano #ayakkabı #erkekayakkabı #sneakerstyle #günlükstil</textarea><button class="secondary" data-copy="tags">Etiketleri kopyala</button></section>
 <section class="panel"><p>YAYIN TAKİBİ</p><h2>İçerik notu</h2><textarea id="memo" rows="3" placeholder="Yayın tarihi, izlenme, kaydetme ve gelen mesaj notları..."></textarea><button id="save">Notu kaydet</button><button id="saveDraft" class="secondary">Reels taslağını kaydet</button><small id="saved"></small></section>
-<footer>VELLESSA MILANO <span>Reels Atölyesi · Sürüm 0.1</span></footer></main><script src="reels.js?v=20261104-iphone1"></script></body></html>
+<footer>VELLESSA MILANO <span>Reels Atölyesi · Sürüm 0.1</span></footer></main><script src="reels.js?v=20261104-clean1"></script></body></html>
