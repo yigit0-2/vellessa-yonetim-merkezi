@@ -47,3 +47,28 @@ const data=await engine.readFile('vellessa-360.mp4');const blob=new Blob([data.b
 }catch(error){console.error(error);say('Video oluşturulamadı: '+(error&&error.message?error.message:'Bilinmeyen hata')+'. Daha az veya daha küçük fotoğrafla tekrar dene.');}finally{busy=false;button.disabled=selected.length<2;}}
 );
 })();
+
+/* Vellessa Signature cinematic ad: local canvas render, no paid API */
+(()=>{const $=id=>document.getElementById(id);const pick=$('cinemaPhotos'),go=$('cinemaCreate');if(!pick||!go)return;let files=[],urls=[],resultUrl=null,busy=false;
+const status=t=>$('cinemaStatus').textContent=t;
+pick.addEventListener('change',()=>{urls.forEach(URL.revokeObjectURL);urls=[];files=Array.from(pick.files||[]).filter(f=>f.type.startsWith('image/')).slice(0,3);$('cinemaThumbs').replaceChildren();files.forEach(f=>{const u=URL.createObjectURL(f);urls.push(u);const im=document.createElement('img');im.src=u;im.alt='Ürün fotoğrafı';$('cinemaThumbs').append(im)});if(files.length<3){$('cinemaThumbs').insertAdjacentText('beforeend','3 fotoğraf seçmelisin.');}go.disabled=files.length!==3;status(files.length===3?'3 fotoğraf hazır. Sinematik videoyu oluşturabilirsin.':'Lütfen 3 ürün fotoğrafı seç.');});
+function rounded(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.stroke();}
+go.addEventListener('click',async()=>{if(busy||files.length!==3)return;busy=true;go.disabled=true;let stream,rec,chunks=[];try{
+status('Ürün fotoğrafları hazırlanıyor...');const imgs=await Promise.all(files.map(f=>createImageBitmap(f)));const canvas=$('cinemaCanvas'),ctx=canvas.getContext('2d');const fps=30,duration=10;stream=canvas.captureStream(fps);
+const types=['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm'];const mime=types.find(t=>MediaRecorder.isTypeSupported(t));if(!mime)throw new Error('Bu tarayıcı video kaydını desteklemiyor. Güncel Safari ile dene.');
+rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:8000000});rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};const done=new Promise((resolve,reject)=>{rec.onstop=resolve;rec.onerror=()=>reject(new Error('Video kaydı başarısız.'))});
+const start=performance.now();let last=0;function draw(now){const t=Math.min(duration,(now-start)/1000),scene=Math.min(2,Math.floor(t/(duration/3))),local=(t-scene*(duration/3))/(duration/3),img=imgs[scene];ctx.fillStyle='#070707';ctx.fillRect(0,0,720,1280);
+const pulse=.5-.5*Math.cos(local*Math.PI),scale=1.03+pulse*.13,iw=img.width,ih=img.height,fit=Math.min(610/iw,850/ih),w=iw*fit*scale,h=ih*fit*scale,drift=(local-.5)*30;
+ctx.save();ctx.shadowColor='rgba(222,181,105,.32)';ctx.shadowBlur=55;ctx.drawImage(img,(720-w)/2+drift,(590-h)/2,w,h);ctx.restore();
+const grad=ctx.createLinearGradient(0,0,720,0);grad.addColorStop(0,'rgba(7,7,7,0)');grad.addColorStop(.5,'rgba(220,177,104,.9)');grad.addColorStop(1,'rgba(7,7,7,0)');ctx.fillStyle=grad;ctx.fillRect(0,220+Math.sin(t*2)*8,720,2);
+ctx.fillStyle='#d9b777';ctx.font='600 17px Arial';ctx.textAlign='center';ctx.fillText('V E L L E S S A   M I L A N O',360,120);
+ctx.fillStyle='#f5f0e8';ctx.font='700 35px Arial';ctx.fillText(($('cinemaTitle').value||'VELLESSA MILANO').toUpperCase().slice(0,28),360,1030);
+ctx.fillStyle='#d6b779';ctx.font='500 18px Arial';ctx.fillText(($('cinemaSubtitle').value||'STYLE THAT MOVES').toUpperCase().slice(0,34),360,1074);
+ctx.fillStyle='rgba(214,183,121,'+(t>8.4?Math.min(1,(t-8.4)/.7):.88)+')';ctx.font='600 20px Arial';ctx.fillText(($('cinemaCta').value||'ŞİMDİ KEŞFET').toUpperCase().slice(0,34),360,1160);
+ctx.fillStyle='#999';ctx.font='14px Arial';ctx.fillText(($('cinemaUrl').value||'').slice(0,45),360,1192);
+ctx.fillStyle='#5c4a2c';ctx.fillRect(70,1230,580,2);ctx.fillStyle='#e2c58e';ctx.fillRect(70,1230,580*(t/duration),2);
+if(t<duration){if(now-last>30){last=now;status('Sinematik reklam kaydediliyor: '+Math.round(t/duration*100)+'%');}requestAnimationFrame(draw);}else{for(const b of stream.getTracks())b.stop();rec.stop();}
+}
+rec.start(250);requestAnimationFrame(draw);await done;const blob=new Blob(chunks,{type:mime});if(resultUrl)URL.revokeObjectURL(resultUrl);resultUrl=URL.createObjectURL(blob);const video=$('cinemaResult');video.src=resultUrl;video.hidden=false;const link=$('cinemaDownload');link.href=resultUrl;link.download=mime.includes('mp4')?'vellessa-signature-reel.mp4':'vellessa-signature-reel.webm';link.hidden=false;link.textContent=mime.includes('mp4')?'MP4 videoyu indir':'WEBM videoyu indir';status((mime.includes('mp4')?'MP4':'WEBM')+' hazır. '+(blob.size/1048576).toFixed(1)+' MB.');imgs.forEach(x=>x.close());
+}catch(e){console.error(e);if(stream)stream.getTracks().forEach(x=>x.stop());status('Video oluşturulamadı: '+e.message);}finally{busy=false;go.disabled=files.length!==3;}});
+})();
